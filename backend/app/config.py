@@ -9,8 +9,11 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     DEBUG: bool = True
 
-    # Database: SQLite by default for simple zero-setup Windows dev, PostgreSQL for prod
-    DATABASE_URL: str = "sqlite:///./pashupulse.db"
+    # Database: SQLite by default for simple zero-setup Windows dev, PostgreSQL/Supabase for prod
+    DATABASE_URL: str = ""
+    POSTGRES_URL: str = ""
+    POSTGRES_PRISMA_URL: str = ""
+    POSTGRES_URL_NON_POOLING: str = ""
 
     # Security: JWT configuration
     SECRET_KEY: str = "pashupulse-dev-secret-key-change-in-production-only-min-32-chars"

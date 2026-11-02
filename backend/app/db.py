@@ -3,8 +3,14 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.config import settings
 
-# Normalize database URL for PostgreSQL (Supabase compatibility)
-db_url = settings.DATABASE_URL
+# Normalize database URL for PostgreSQL (Supabase compatibility on Vercel)
+raw_url = (
+    settings.DATABASE_URL
+    or settings.POSTGRES_PRISMA_URL
+    or settings.POSTGRES_URL
+    or "sqlite:///./pashupulse.db"
+)
+db_url = raw_url
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
