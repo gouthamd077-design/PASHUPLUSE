@@ -93,6 +93,10 @@ def root():
 
 
 @app.get("/api/v1/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
+@app.get("/health", tags=["Health"])
+@api_router.get("/v1/health", tags=["Health"])
+@api_router.get("/health", tags=["Health"])
 def health_check():
     """System health check endpoint."""
     return {
