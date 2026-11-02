@@ -43,7 +43,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include core feature routers
+# Include core feature routers at root
 app.include_router(auth.router)
 app.include_router(animals.router)
 app.include_router(events.router)
@@ -52,13 +52,31 @@ app.include_router(reminders.router)
 app.include_router(vets.router)
 app.include_router(sync.router)
 
-# Include Innovation Pillar routers
+# Include Innovation Pillar routers at root
 app.include_router(cases.router)
 app.include_router(sos.router)
 app.include_router(village_clusters.router)
 app.include_router(family.router)
 app.include_router(learning.router)
 app.include_router(copilot.router)
+
+# Mount all routers under /api as well to support Vercel /api rewrites and Vite proxy
+from fastapi import APIRouter
+api_router = APIRouter(prefix="/api")
+api_router.include_router(auth.router)
+api_router.include_router(animals.router)
+api_router.include_router(events.router)
+api_router.include_router(symptoms.router)
+api_router.include_router(reminders.router)
+api_router.include_router(vets.router)
+api_router.include_router(sync.router)
+api_router.include_router(cases.router)
+api_router.include_router(sos.router)
+api_router.include_router(village_clusters.router)
+api_router.include_router(family.router)
+api_router.include_router(learning.router)
+api_router.include_router(copilot.router)
+app.include_router(api_router)
 
 
 @app.get("/", tags=["General"])

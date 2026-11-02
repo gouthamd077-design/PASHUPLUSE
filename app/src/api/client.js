@@ -1,4 +1,20 @@
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const CUSTOM_BASE = import.meta.env.VITE_API_BASE_URL;
+
+export function resolveApiUrl(endpoint) {
+  if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+    return endpoint;
+  }
+
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  if (CUSTOM_BASE) {
+    const base = CUSTOM_BASE.replace(/\/$/, '');
+    return `${base}${cleanEndpoint}`;
+  }
+
+  // Under Vercel multi-service routing and Vite dev proxy, backend routes are exposed under /api
+  return cleanEndpoint.startsWith('/api') ? cleanEndpoint : `/api${cleanEndpoint}`;
+}
 
 export function getAuthToken() {
   return localStorage.getItem('pashupulse_token') || null;
@@ -23,7 +39,7 @@ export async function apiRequest(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const url = resolveApiUrl(endpoint);
 
   const response = await fetch(url, {
     ...options,
