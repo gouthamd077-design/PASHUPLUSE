@@ -1,0 +1,382 @@
+[
+  {
+    "id": "cattle_reduced_feed_v1",
+    "species": "cattle",
+    "symptom_key": "reduced_feed",
+    "needs_vet_review": true,
+    "is_active": true,
+    "rule_data": {
+      "symptom_name": {
+        "en": "Reduced Feed / Loss of Appetite",
+        "hi": "चारा कम खाना / भूख न लगना"
+      },
+      "start_question_id": "q1",
+      "questions": [
+        {
+          "id": "q1",
+          "text": {
+            "en": "Has the animal stopped eating and drinking completely?",
+            "hi": "क्या पशु ने खाना और पानी पीना पूरी तरह बंद कर दिया है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, stopped completely", "hi": "हाँ, पूरी तरह बंद" }, "value": "yes", "next": "q2" },
+            { "label": { "en": "No, eating less than usual", "hi": "नहीं, सामान्य से कम खा रहा है" }, "value": "no", "next": "q3" }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": {
+            "en": "Is the left abdomen visibly swollen or bloated (tight like a drum)?",
+            "hi": "क्या पेट का बायाँ हिस्सा फूला हुआ या तना हुआ है (ढोल जैसा)?"
+          },
+          "options": [
+            { "label": { "en": "Yes, bloated abdomen", "hi": "हाँ, पेट फूला है" }, "value": "yes", "outcome": "emergency_bloat" },
+            { "label": { "en": "No visible swelling", "hi": "नहीं, पेट सामान्य है" }, "value": "no", "outcome": "call_vet_soon_anorexia" }
+          ]
+        },
+        {
+          "id": "q3",
+          "text": {
+            "en": "Is the animal chewing cud (ruminating) normally?",
+            "hi": "क्या पशु सामान्य रूप से जुगाली कर रहा है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, chewing cud normally", "hi": "हाँ, जुगाली कर रहा है" }, "value": "yes", "outcome": "watch_appetite" },
+            { "label": { "en": "No, little or no cud chewing", "hi": "नहीं, जुगाली बंद या बहुत कम है" }, "value": "no", "outcome": "call_vet_soon_indigestion" }
+          ]
+        }
+      ],
+      "outcomes": {
+        "emergency_bloat": {
+          "level": "emergency",
+          "title": {
+            "en": "EMERGENCY: Suspected Bloat / Tympany",
+            "hi": "आपातकालीन: पेट फूलने (अफारा) की आशंका"
+          },
+          "guidance": [
+            { "en": "Keep the animal standing and walk slowly if possible; do NOT let it lie down.", "hi": "पशु को खड़ा रखें और यदि संभव हो तो धीरे-धीरे चलाएं; बैठने न दें।" },
+            { "en": "Do NOT force-feed any water or solid feed.", "hi": "जबरन पानी या कोई भी ठोस चारा न खिलाएं।" },
+            { "en": "Call your veterinarian or livestock officer immediately.", "hi": "तुरंत अपने निकटतम पशु चिकित्सक को कॉल करें।" }
+          ]
+        },
+        "call_vet_soon_anorexia": {
+          "level": "call_vet_soon",
+          "title": {
+            "en": "Attention Needed: Complete Loss of Appetite",
+            "hi": "ध्यान दें: पशु ने खाना पूरी तरह बंद कर दिया है"
+          },
+          "guidance": [
+            { "en": "Check body temperature with a veterinary thermometer if available.", "hi": "यदि थर्मामीटर उपलब्ध हो तो शरीर का तापमान मापें।" },
+            { "en": "Provide clean, fresh water and keep animal in shade.", "hi": "साफ और ताज़ा पानी दें तथा पशु को छाया में रखें।" },
+            { "en": "Contact a veterinarian within 24 hours to diagnose underlying infection or fever.", "hi": "संक्रमण या बुखार की जांच के लिए 24 घंटे में पशु चिकित्सक से परामर्श लें।" }
+          ]
+        },
+        "call_vet_soon_indigestion": {
+          "level": "call_vet_soon",
+          "title": {
+            "en": "Consultation Recommended: Impaired Digestion",
+            "hi": "परामर्श की सलाह: पाचन में गड़बड़ी"
+          },
+          "guidance": [
+            { "en": "Offer easily digestible soft green fodder and fresh water.", "hi": "सुपाच्य हरा चारा और ताज़ा पानी उपलब्ध कराएं।" },
+            { "en": "Monitor dung consistency and frequency.", "hi": "गोबर की स्थिति और मात्रा पर नजर रखें।" },
+            { "en": "If chewing cud does not resume within 24 hours, contact a veterinarian.", "hi": "यदि 24 घंटे में जुगाली शुरू न हो, तो डॉक्टर को दिखाएं।" }
+          ]
+        },
+        "watch_appetite": {
+          "level": "watch",
+          "title": {
+            "en": "Watch Closely: Mild Appetite Drop",
+            "hi": "निगरानी करें: हल्की भूख की कमी"
+          },
+          "guidance": [
+            { "en": "Keep the feeding manger clean and remove spoiled feed.", "hi": "नाद को साफ रखें और बासी या खराब चारा हटा दें।" },
+            { "en": "Ensure access to cool drinking water and shade.", "hi": "ठंडे पीने के पानी और छाया की व्यवस्था सुनिश्चित करें।" },
+            { "en": "If feed intake does not improve tomorrow, consult your Paravet or vet.", "hi": "यदि कल तक चारा खाना न सुधरे तो पैरावेट या डॉक्टर से सलाह लें।" }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "cattle_fever_v1",
+    "species": "cattle",
+    "symptom_key": "fever_dullness",
+    "needs_vet_review": true,
+    "is_active": true,
+    "rule_data": {
+      "symptom_name": {
+        "en": "High Body Temperature / Dullness",
+        "hi": "तेज़ बुखार / सुस्ती"
+      },
+      "start_question_id": "q1",
+      "questions": [
+        {
+          "id": "q1",
+          "text": {
+            "en": "Is the animal recumbent (unable or refusing to stand up)?",
+            "hi": "क्या पशु नीचे बैठ गया है और उठने में असमर्थ है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, unable to stand", "hi": "हाँ, खड़ा नहीं हो पा रहा" }, "value": "yes", "outcome": "emergency_recumbent_fever" },
+            { "label": { "en": "No, can stand and walk", "hi": "नहीं, खड़ा होकर चल सकता है" }, "value": "no", "next": "q2" }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": {
+            "en": "Do you notice rapid, heavy breathing or panting?",
+            "hi": "क्या पशु तेज़ सांस ले रहा है या हांफ रहा है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, rapid breathing", "hi": "हाँ, तेज़ सांस ले रहा है" }, "value": "yes", "outcome": "call_vet_soon_respiratory" },
+            { "label": { "en": "No, normal breathing", "hi": "नहीं, सामान्य सांस है" }, "value": "no", "outcome": "watch_fever" }
+          ]
+        }
+      ],
+      "outcomes": {
+        "emergency_recumbent_fever": {
+          "level": "emergency",
+          "title": {
+            "en": "EMERGENCY: Downer Animal with Severe Weakness",
+            "hi": "आपातकालीन: अत्यधिक कमजोरी और बैठने की स्थिति"
+          },
+          "guidance": [
+            { "en": "Provide soft bedding (straw/dry sand) to prevent pressure sores.", "hi": "घाव से बचाने के लिए नीचे पुआल या सूखी रेत की मुलायम बिछाली करें।" },
+            { "en": "Keep the animal sitting upright on brisket; avoid lying flat on side.", "hi": "पशु को सीने के बल बैठाएं; करवट लेकर लेटने न दें।" },
+            { "en": "Call your veterinarian immediately for urgent examination.", "hi": "जांच और उपचार के लिए तुरंत डॉक्टर को बुलाएं।" }
+          ]
+        },
+        "call_vet_soon_respiratory": {
+          "level": "call_vet_soon",
+          "title": {
+            "en": "Veterinary Consultation Advised: Fever with Rapid Breathing",
+            "hi": "डॉक्टर की सलाह लें: बुखार और तेज़ सांस"
+          },
+          "guidance": [
+            { "en": "Place animal in a well-ventilated, shaded stall.", "hi": "पशु को हवादार और छायादार स्थान पर रखें।" },
+            { "en": "Splash cool water on forehead and body if hot weather.", "hi": "गर्म मौसम में माथे और शरीर पर सामान्य ठंडा पानी छिड़कें।" },
+            { "en": "Have a qualified veterinarian evaluate for respiratory infection.", "hi": "श्वसन संक्रमण की जांच के लिए पशु चिकित्सक को दिखाएं।" }
+          ]
+        },
+        "watch_fever": {
+          "level": "watch",
+          "title": {
+            "en": "Monitor Temperature: Mild Dullness",
+            "hi": "निगरानी रखें: हल्की सुस्ती"
+          },
+          "guidance": [
+            { "en": "Keep the animal rested and isolated from cold drafts or direct sun.", "hi": "पशु को सीधी धूप व ठंडी हवा से बचाकर आराम दें।" },
+            { "en": "Offer clean water frequently in small amounts.", "hi": "थोड़ी-थोड़ी मात्रा में बार-बार साफ पानी दें।" },
+            { "en": "If dullness persists for more than 12 hours, request a veterinary visit.", "hi": "यदि 12 घंटे से अधिक सुस्ती बनी रहे, तो डॉक्टर से संपर्क करें।" }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "cattle_diarrhea_v1",
+    "species": "cattle",
+    "symptom_key": "diarrhea",
+    "needs_vet_review": true,
+    "is_active": true,
+    "rule_data": {
+      "symptom_name": {
+        "en": "Loose Dung / Diarrhea",
+        "hi": "पतला गोबर / दस्त"
+      },
+      "start_question_id": "q1",
+      "questions": [
+        {
+          "id": "q1",
+          "text": {
+            "en": "Is there visible blood or foul-smelling mucus in the dung?",
+            "hi": "क्या गोबर में खून या अत्यधिक बदबूदार बलगम आ रहा है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, blood or dark foul discharge", "hi": "हाँ, खून या बदबूदार स्राव" }, "value": "yes", "outcome": "emergency_bloody_scours" },
+            { "label": { "en": "No blood visible", "hi": "नहीं, खून नहीं है" }, "value": "no", "next": "q2" }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": {
+            "en": "Are the animal's eyes sunken, or does skin pinch stay tented (dehydration)?",
+            "hi": "क्या पशु की आँखें अंदर धंस गई हैं या त्वचा में खिंचाव (निर्जलीकरण) है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, visible dehydration signs", "hi": "हाँ, निर्जलीकरण के लक्षण हैं" }, "value": "yes", "outcome": "call_vet_soon_dehydration" },
+            { "label": { "en": "No, animal is alert and hydrated", "hi": "नहीं, पशु सामान्य और सक्रिय है" }, "value": "no", "outcome": "watch_diarrhea" }
+          ]
+        }
+      ],
+      "outcomes": {
+        "emergency_bloody_scours": {
+          "level": "emergency",
+          "title": {
+            "en": "URGENT: Hemorrhagic Enteritis / Bloody Diarrhea",
+            "hi": "अति आवश्यक: खूनी दस्त / गंभीर आंत्रशोथ"
+          },
+          "guidance": [
+            { "en": "Isolate the animal from others immediately to limit infection spread.", "hi": "संक्रमण फैलने से रोकने के लिए पशु को तुरंत अन्य मवेशियों से अलग करें।" },
+            { "en": "Keep animal clean and dry; disinfect dung area.", "hi": "पशु व बाड़े को सूखा और साफ रखें; कीटाणुनाशक का प्रयोग करें।" },
+            { "en": "Call a veterinarian immediately for proper fluid and therapeutic management.", "hi": "ड्रिप और सही इलाज के लिए तुरंत पशु चिकित्सक को बुलाएं।" }
+          ]
+        },
+        "call_vet_soon_dehydration": {
+          "level": "call_vet_soon",
+          "title": {
+            "en": "Consultation Required: Diarrhea with Dehydration",
+            "hi": "परामर्श आवश्यक: दस्त के साथ पानी की कमी"
+          },
+          "guidance": [
+            { "en": "Offer clean water mixed with oral rehydration salts (ORS) or electrolyte mix.", "hi": "ORS या इलेक्ट्रोलाइट घोल मिलाकर साफ पानी पिलाएं।" },
+            { "en": "Temporarily reduce grain concentrates and provide dry fiber hay.", "hi": "दाना और खली कम करें और सूखा चारा/भूसा दें।" },
+            { "en": "Arrange veterinary consultation to check for parasitic or bacterial cause.", "hi": "कीड़े या बैक्टीरिया की जांच हेतु पशु चिकित्सक से संपर्क करें।" }
+          ]
+        },
+        "watch_diarrhea": {
+          "level": "watch",
+          "title": {
+            "en": "Home Observation: Mild Loose Motion",
+            "hi": "घरेलू निगरानी: सामान्य पतला गोबर"
+          },
+          "guidance": [
+            { "en": "Ensure abundant clean drinking water at all times.", "hi": "हर समय प्रचुर मात्रा में साफ पीने का पानी उपलब्ध रखें।" },
+            { "en": "Avoid sudden changes in diet or overfeeding lush green grass.", "hi": "अचानक आहार में बदलाव या अत्यधिक रसीला हरा चारा देने से बचें।" },
+            { "en": "If not resolved within 24-36 hours, call a Paravet or vet.", "hi": "यदि 24-36 घंटे में सुधार न हो, तो पैरावेट या डॉक्टर को दिखाएं।" }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "cattle_lameness_v1",
+    "species": "cattle",
+    "symptom_key": "lameness",
+    "needs_vet_review": true,
+    "is_active": true,
+    "rule_data": {
+      "symptom_name": {
+        "en": "Limping / Leg Swelling / Lameness",
+        "hi": "लंगड़ाना / पैर में सूजन"
+      },
+      "start_question_id": "q1",
+      "questions": [
+        {
+          "id": "q1",
+          "text": {
+            "en": "Are there blisters, sores, or lesions on hooves or mouth (excessive drooling)?",
+            "hi": "क्या खुरों या मुंह में छाले/घाव हैं और मुंह से लार टपक रही है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, sores on hooves or mouth drooling", "hi": "हाँ, खुर या मुंह में छाले हैं" }, "value": "yes", "outcome": "emergency_fmd_suspect" },
+            { "label": { "en": "No lesions or drooling", "hi": "नहीं, कोई छाले या लार नहीं" }, "value": "no", "next": "q2" }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": {
+            "en": "Is the animal completely unable to bear weight on the limb?",
+            "hi": "क्या पशु उस पैर पर बिल्कुल भी वजन नहीं रख पा रहा है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, will not put foot down", "hi": "हाँ, पैर ज़मीन पर नहीं रख रहा" }, "value": "yes", "outcome": "call_vet_soon_severe_lameness" },
+            { "label": { "en": "No, limping but can walk", "hi": "नहीं, लंगड़ा रहा है पर चल सकता है" }, "value": "no", "outcome": "watch_mild_lameness" }
+          ]
+        }
+      ],
+      "outcomes": {
+        "emergency_fmd_suspect": {
+          "level": "emergency",
+          "title": {
+            "en": "ALERT: Suspected Contagious Foot & Mouth Symptoms",
+            "hi": "चेतावनी: संभावित संक्रामक खुरपका-मुंहपका (FMD) लक्षण"
+          },
+          "guidance": [
+            { "en": "Strictly quarantine the animal away from all other livestock immediately.", "hi": "पशु को तुरंत अन्य सभी पशुओं से बिल्कुल अलग बाड़े में रखें।" },
+            { "en": "Do NOT move animals off the farm or to common grazing areas.", "hi": "पशुओं को बाहर या सामूहिक चरागाह में न ले जाएं।" },
+            { "en": "Report immediately to your nearest Veterinary Hospital or government vet officer.", "hi": "तुरंत निकटतम राजकीय पशु चिकित्सालय या डॉक्टर को सूचित करें।" }
+          ]
+        },
+        "call_vet_soon_severe_lameness": {
+          "level": "call_vet_soon",
+          "title": {
+            "en": "Veterinary Evaluation Advised: Severe Lameness or Injury",
+            "hi": "डॉक्टर की सलाह लें: गंभीर लंगड़ापन या चोट"
+          },
+          "guidance": [
+            { "en": "Restrict animal movement and provide dry, non-slippery bedding.", "hi": "पशु को चलने-फिरने न दें और सूखी व फिसलन-रहित सतह पर रखें।" },
+            { "en": "Inspect the hoof carefully for foreign objects (nails, stones, thorns).", "hi": "खुर के तलवे को ध्यान से देखें कि कोई कील, पत्थर या कांटा तो नहीं फंसा।" },
+            { "en": "Consult a veterinarian to check for sprain, fracture, or hoof abscess.", "hi": "मोच, फ्रैक्चर या खुर के घाव की जांच हेतु डॉक्टर को दिखाएं।" }
+          ]
+        },
+        "watch_mild_lameness": {
+          "level": "watch",
+          "title": {
+            "en": "Observe and Rest: Mild Limp",
+            "hi": "निगरानी और आराम: हल्का लंगड़ापन"
+          },
+          "guidance": [
+            { "en": "Allow the animal to rest on clean soft ground; avoid walking on rough asphalt.", "hi": "पशु को नरम व साफ जमीन पर आराम करने दें; पक्की सड़क पर न चलाएं।" },
+            { "en": "Gently wash hoof with clean water and inspect for superficial stones.", "hi": "खुर को साफ पानी से धोकर जांचें कि कहीं कंकड़ तो नहीं फंसा।" },
+            { "en": "If limping continues for over 48 hours, seek veterinary guidance.", "hi": "यदि 48 घंटे बाद भी लंगड़ापन रहे, तो डॉक्टर से संपर्क करें।" }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "cattle_nasal_discharge_v1",
+    "species": "cattle",
+    "symptom_key": "nasal_discharge_cough",
+    "needs_vet_review": true,
+    "is_active": true,
+    "rule_data": {
+      "symptom_name": {
+        "en": "Coughing / Nasal Discharge",
+        "hi": "खांसी / नाक से स्राव"
+      },
+      "start_question_id": "q1",
+      "questions": [
+        {
+          "id": "q1",
+          "text": {
+            "en": "Is the nasal discharge thick yellow/green with foul odor or difficulty breathing?",
+            "hi": "क्या नाक से गाढ़ा पीला/हरा स्राव आ रहा है या सांस लेने में कष्ट हो रहा है?"
+          },
+          "options": [
+            { "label": { "en": "Yes, thick purulent discharge", "hi": "हाँ, गाढ़ा पीला/हरा स्राव" }, "value": "yes", "outcome": "call_vet_soon_pneumonia" },
+            { "label": { "en": "No, clear watery discharge", "hi": "नहीं, साफ पानी जैसा स्राव" }, "value": "no", "outcome": "watch_cough" }
+          ]
+        }
+      ],
+      "outcomes": {
+        "call_vet_soon_pneumonia": {
+          "level": "call_vet_soon",
+          "title": {
+            "en": "Veterinary Check Needed: Suspected Respiratory Infection",
+            "hi": "डॉक्टर की सलाह लें: फेफड़ों के संक्रमण की आशंका"
+          },
+          "guidance": [
+            { "en": "Keep the animal protected from cold winds, rain, or excessive dust.", "hi": "पशु को ठंडी हवा, बारिश और धूल से सुरक्षित रखें।" },
+            { "en": "Keep muzzle clean using a soft clean moist cloth.", "hi": "मुंह व थूथन को साफ मुलायम नम कपड़े से पोंछते रहें।" },
+            { "en": "A veterinarian should auscultate lungs to prescribe appropriate antibiotics if needed.", "hi": "फेफड़ों की जांच और उचित दवा के लिए पशु चिकित्सक को दिखाएं।" }
+          ]
+        },
+        "watch_cough": {
+          "level": "watch",
+          "title": {
+            "en": "Monitor Condition: Mild Cough or Clear Discharge",
+            "hi": "निगरानी करें: हल्की खांसी या पानी जैसा स्राव"
+          },
+          "guidance": [
+            { "en": "Ensure stall is well-ventilated and free from smoke or fine dust.", "hi": "बाड़े में धुआं या उड़ती धूल न होने दें, हवा का आवागमन रखें।" },
+            { "en": "Provide fresh water and dry un-molded fodder.", "hi": "ताज़ा पानी और फफूंद-रहित सूखा चारा दें।" },
+            { "en": "If discharge turns thick or temperature rises, consult your veterinarian.", "hi": "यदि नाक से गाढ़ा स्राव आए या बुखार हो, तो डॉक्टर को दिखाएं।" }
+          ]
+        }
+      }
+    }
+  }
+]

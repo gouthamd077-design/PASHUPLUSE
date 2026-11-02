@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Dr. Ramesh Kumar M.",
+    "role": "Senior Veterinary Officer (Govt)",
+    "phone": "+91 98450 12345",
+    "district": "Mandya",
+    "sub_district": "Mandya Central Polyclinic",
+    "specialization": "Bovine Infectious Diseases, Herd Health & Obstetrics",
+    "is_verified": true
+  },
+  {
+    "name": "Dr. Basavaraju Gowda",
+    "role": "Veterinary Surgeon",
+    "phone": "+91 98451 23456",
+    "district": "Mysuru",
+    "sub_district": "Nanjangud Taluk Polyclinic",
+    "specialization": "Cattle & Buffalo Internal Medicine, Foot Lesions",
+    "is_verified": true
+  },
+  {
+    "name": "Dr. Anitha K. Swamy",
+    "role": "Assistant Director, Animal Husbandry",
+    "phone": "+91 98452 34567",
+    "district": "Mandya",
+    "sub_district": "Pandavapura",
+    "specialization": "Epidemiology, Viral Outbreaks & Biosecurity",
+    "is_verified": true
+  },
+  {
+    "name": "Smt. Lakshmi Devi",
+    "role": "Pashu Sakhi / Paravet",
+    "phone": "+91 98453 45678",
+    "district": "Mandya",
+    "sub_district": "Srirangapatna",
+    "specialization": "First Aid, Deworming, Vaccinations & Caregiver Support",
+    "is_verified": true
+  },
+  {
+    "name": "Dr. Chamaraja Urs",
+    "role": "Private Veterinary Practitioner",
+    "phone": "+91 98454 56789",
+    "district": "Mysuru",
+    "sub_district": "Hunsur",
+    "specialization": "Dairy Cattle Nutrition, Metabolic Diseases",
+    "is_verified": true
+  }
+]
