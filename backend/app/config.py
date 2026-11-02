@@ -21,7 +21,13 @@ class Settings(BaseSettings):
     DEV_MOCK_OTP: str = "1234"
 
     # Allowed CORS Origins for React + Vite PWA frontend
-    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173", "*"]
+
+    # Supabase Configuration
+    SUPABASE_URL: str = ""
+    SUPABASE_KEY: str = ""
+    SUPABASE_ANON_KEY: str = ""
+    SUPABASE_SERVICE_ROLE_KEY: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",

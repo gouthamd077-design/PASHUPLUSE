@@ -79,7 +79,9 @@ api_router.include_router(copilot.router)
 app.include_router(api_router)
 
 
-@app.get("/", tags=["General"])
+@app.api_route("/", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["General"])
+@app.api_route("/api", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["General"])
+@api_router.api_route("", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["General"])
 def root():
     """Welcome endpoint confirming API is running."""
     return {
@@ -92,11 +94,11 @@ def root():
     }
 
 
-@app.get("/api/v1/health", tags=["Health"])
-@app.get("/api/health", tags=["Health"])
-@app.get("/health", tags=["Health"])
-@api_router.get("/v1/health", tags=["Health"])
-@api_router.get("/health", tags=["Health"])
+@app.api_route("/api/v1/health", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["Health"])
+@app.api_route("/api/health", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["Health"])
+@app.api_route("/health", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["Health"])
+@api_router.api_route("/v1/health", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["Health"])
+@api_router.api_route("/health", methods=["GET", "POST", "HEAD", "OPTIONS"], tags=["Health"])
 def health_check():
     """System health check endpoint."""
     return {

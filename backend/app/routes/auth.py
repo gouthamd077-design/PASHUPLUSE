@@ -10,6 +10,17 @@ from app.routes.deps import get_current_user
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
+@router.get("/request-otp", summary="Info for request-otp endpoint")
+def request_otp_info():
+    """Information handler preventing 405 Method Not Allowed on browser GET."""
+    return {
+        "endpoint": "/auth/request-otp",
+        "method": "POST",
+        "description": "Send a POST request with JSON body {'phone': '9845012345'}",
+        "example_curl": "curl -X POST -H 'Content-Type: application/json' -d '{\"phone\":\"9845012345\"}' http://localhost:8000/auth/request-otp",
+    }
+
+
 @router.post("/request-otp", summary="Request OTP for phone number")
 def request_otp(data: OTPRequest):
     """Sends a 4-digit OTP to the specified mobile number (logged in console in dev)."""
@@ -19,6 +30,16 @@ def request_otp(data: OTPRequest):
         "message": "OTP generated successfully",
         "phone": data.phone,
         "dev_otp": otp,  # Included for seamless local dev & testing
+    }
+
+
+@router.get("/verify-otp", summary="Info for verify-otp endpoint")
+def verify_otp_info():
+    """Information handler preventing 405 Method Not Allowed on browser GET."""
+    return {
+        "endpoint": "/auth/verify-otp",
+        "method": "POST",
+        "description": "Send a POST request with JSON body {'phone': '9845012345', 'otp': '1234', 'role': 'farmer'}",
     }
 
 
