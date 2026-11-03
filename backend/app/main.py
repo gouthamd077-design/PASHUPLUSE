@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.db import engine, Base
+from app.db import engine, Base, init_db
 import app.models  # noqa: F401 - Register models with Base
 
 # Import all API routers
@@ -23,8 +23,8 @@ from app.routes import (
     copilot,
 )
 
-# Create tables if they do not exist
-Base.metadata.create_all(bind=engine)
+# Safely initialize database tables without crashing on cold starts
+init_db()
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -33,6 +33,25 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+# Global unhandled exception handler to return clean JSON rather than 500 crashes
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import logging
+    import traceback
+    logging.getLogger("uvicorn.error").error(f"Global unhandled error on {request.url}: {traceback.format_exc()}")
+    return JSONResponse(
+        status_code=500,
+        content={
+            "status": "error",
+            "message": str(exc) or "Internal Server Error",
+            "error_type": exc.__class__.__name__,
+            "path": request.url.path,
+        },
+    )
 
 # Configure Cross-Origin Resource Sharing (CORS) for the frontend PWA
 app.add_middleware(
