@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -5,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.db import engine, Base, init_db
 import app.models  # noqa: F401 - Register models with Base
+
+logger = logging.getLogger("pashupulse")
 
 # Import all API routers
 from app.routes import (
