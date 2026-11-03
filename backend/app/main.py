@@ -33,9 +33,11 @@ app = FastAPI(
 
 @app.on_event("startup")
 def on_startup():
-    """Initialize database tables in background without blocking serverless cold starts."""
-    import threading
-    threading.Thread(target=init_db, daemon=True).start()
+    """Initialize database tables safely without crashing."""
+    try:
+        init_db()
+    except Exception as e:
+        logger.warning(f"Database startup notice: {e}")
 
 # Global unhandled exception handler to return clean JSON rather than 500 crashes
 from fastapi import Request
