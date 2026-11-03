@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
     "clsx": "^2.1.1",
+    "html5-qrcode": "^2.3.8",
     "idb": "^8.0.0",
     "lucide-react": "^0.460.0",
     "qrcode": "^1.5.4",

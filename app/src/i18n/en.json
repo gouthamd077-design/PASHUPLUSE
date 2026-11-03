@@ -204,5 +204,12 @@
   "admin_vets_count": "Verified Doctors",
   "admin_clusters_count": "Early Warning Clusters",
   "admin_verify_vets": "Veterinary Officer License Verification",
-  "admin_cluster_mgr": "Village Disease Radar Cluster Oversight"
+  "admin_cluster_mgr": "Village Disease Radar Cluster Oversight",
+  "delete_animal": "Delete Animal",
+  "delete_confirm": "Are you sure you want to delete this animal?",
+  "delete_permanent": "Permanently Delete",
+  "delete_archive": "Archive Animal",
+  "delete_subtext": "Removing this animal will remove or archive it from your active livestock records.",
+  "delete_permanent_warning": "Warning: Permanent deletion cannot be undone and will delete all associated records.",
+  "animal_deleted": "Animal deleted successfully"
 }

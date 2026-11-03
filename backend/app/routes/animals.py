@@ -97,19 +97,28 @@ def update_animal(
     return animal
 
 
-@router.delete("/{animal_id}", summary="Archive animal (soft delete)")
+@router.delete("/{animal_id}", summary="Delete or archive animal")
 def delete_animal(
     animal_id: str,
+    hard: bool = Query(False, description="Permanently delete animal from database"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    animal = db.query(Animal).filter(Animal.id == animal_id, Animal.user_id == current_user.id).first()
+    animal = db.query(Animal).filter(Animal.id == animal_id).first()
     if not animal:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Animal not found")
 
-    animal.status = "archived"
-    now = datetime.now(timezone.utc)
-    animal.updated_at = now
-    animal.server_updated_at = now
-    db.commit()
-    return {"message": "Animal archived successfully", "id": animal_id}
+    if animal.user_id != current_user.id and getattr(current_user, "role", None) not in ["admin", "superadmin"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to delete this animal")
+
+    if hard:
+        db.delete(animal)
+        db.commit()
+        return {"message": "Animal permanently deleted", "id": animal_id, "deleted": True}
+    else:
+        animal.status = "archived"
+        now = datetime.now(timezone.utc)
+        animal.updated_at = now
+        animal.server_updated_at = now
+        db.commit()
+        return {"message": "Animal archived successfully", "id": animal_id, "deleted": True}

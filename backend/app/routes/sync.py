@@ -80,11 +80,15 @@ def sync_data(
                 existing.server_updated_at = now
                 applied_count += 1
 
-            elif action == "delete" and existing and existing.user_id == current_user.id:
-                existing.status = "archived"
-                existing.updated_at = mut.client_timestamp
-                existing.server_updated_at = now
-                applied_count += 1
+            elif action in ("delete", "hard_delete") and existing:
+                if existing.user_id == current_user.id or getattr(current_user, "role", None) in ["admin", "superadmin"]:
+                    if action == "hard_delete" or d.get("hard"):
+                        db.delete(existing)
+                    else:
+                        existing.status = "archived"
+                        existing.updated_at = mut.client_timestamp
+                        existing.server_updated_at = now
+                    applied_count += 1
 
         elif entity == "health_event":
             existing = db.query(HealthEvent).filter(HealthEvent.id == entity_id).first()

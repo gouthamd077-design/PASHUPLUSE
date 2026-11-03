@@ -25,62 +25,182 @@ export default function MedicineAdherenceScreen() {
   const [followupNotes, setFollowupNotes] = useState('');
   const [followupSuccess, setFollowupSuccess] = useState(false);
 
+  const getDemoCases = () => [
+    {
+      id: 'case-demo-1',
+      case_number: 'PP-2026-00124',
+      animal_name: language === 'kn' ? 'ಗಂಗಾ (ಹಳ್ಳಿಕಾರ್ ಹಸು)' : 'Ganga (Hallikar Cow)',
+      status: language === 'kn' ? 'ಚಿಕಿತ್ಸೆಯಲ್ಲಿದೆ' : 'TREATMENT_PRESCRIBED',
+      vet_assessment: {
+        diagnosis:
+          language === 'kn'
+            ? 'ತೀವ್ರ ಅಲ್ಪಕಾಲಿಕ ಬೋವೈನ್ ಜ್ವರ (104.2°F ಜ್ವರ ಮತ್ತು ಕುಂಟುವಿಕೆ)'
+            : 'Acute Bovine Ephemeral Fever with secondary glossitis',
+        diagnosed_by:
+          language === 'kn'
+            ? 'ಡಾ. ರಮೇಶ್ ಕುಮಾರ್ (ಮಂಡ್ಯ ಪಾಲಿಕ್ಲಿನಿಕ್)'
+            : 'Dr. Ramesh Kumar (Mandya Polyclinic)',
+      },
+      prescription: {
+        medicines: [
+          {
+            name: language === 'kn' ? 'ಮೆಲೋಕ್ಸಿಕಾಮ್ ಬೋಲಸ್ (100mg)' : 'Meloxicam Bolus (100mg)',
+            dosage: language === 'kn' ? '1 ಮಾತ್ರೆ (ಬೋಲಸ್)' : '1 bolus',
+            frequency: language === 'kn' ? 'ಬೆಳಿಗ್ಗೆ ಮತ್ತು ಸಂಜೆ' : 'Morning & Evening (BID)',
+            duration_days: 3,
+            instructions:
+              language === 'kn'
+                ? 'ಹಸಿರು ಮೇವು ನೀಡಿದ ನಂತರ ಬಾಯಿಯ ಮೂಲಕ ಕೊಡಿ.'
+                : 'Administer orally after green fodder feed.',
+          },
+          {
+            name: language === 'kn' ? 'ಬಿ-ಕಾಂಪ್ಲೆಕ್ಸ್ ಲಿವರ್ ಟಾನಿಕ್' : 'B-Complex Liver Tonic (Oral Syrup)',
+            dosage: '50 ml',
+            frequency: language === 'kn' ? 'ದಿನಕ್ಕೆ ಒಮ್ಮೆ (ಬೆಳಿಗ್ಗೆ)' : 'Once Daily (Morning)',
+            duration_days: 5,
+            instructions:
+              language === 'kn'
+                ? 'ಮೇವು ತಿನ್ನುವುದನ್ನು ಹೆಚ್ಚಿಸಲು ಮತ್ತು ಜೀರ್ಣಕ್ರಿಯೆಗೆ ನೀಡಿ.'
+                : 'Stimulates appetite and rumination.',
+          },
+          {
+            name: language === 'kn' ? 'ಎಲೆಕ್ಟ್ರೋಲೈಟ್ ಶಕ್ತಿವರ್ಧಕ ಸ್ಯಾಚೆಟ್' : 'Electral Energy Booster Oral Sachet',
+            dosage: language === 'kn' ? '1 ಪ್ಯಾಕೆಟ್' : '1 sachet',
+            frequency: language === 'kn' ? 'ಬೆಚ್ಚಗಿನ ನೀರಿನಲ್ಲಿ ಕರಗಿಸಿ ದಿನಕ್ಕೆ ಒಮ್ಮೆ' : 'Once Daily in 5L warm water',
+            duration_days: 3,
+            instructions:
+              language === 'kn'
+                ? 'ನಿರ್ಜಲೀಕರಣ ತಡೆಗಟ್ಟಲು ಮತ್ತು ಶಕ್ತಿ ತುಂಬಲು.'
+                : 'Maintains electrolyte balance and prevents weakness.',
+          },
+        ],
+        followup_date: '2026-11-06',
+        prescribed_by: language === 'kn' ? 'ಡಾ. ರಮೇಶ್ ಕುಮಾರ್' : 'Dr. Ramesh Kumar',
+      },
+    },
+    {
+      id: 'case-demo-2',
+      case_number: 'PP-2026-01044',
+      animal_name: language === 'kn' ? 'ಯಮುನಾ (ಮುರ್ರಾ ಎಮ್ಮೆ)' : 'Yamuna (Murrah Buffalo)',
+      status: language === 'kn' ? 'ಚಿಕಿತ್ಸೆಯಲ್ಲಿದೆ' : 'TREATMENT_PRESCRIBED',
+      vet_assessment: {
+        diagnosis:
+          language === 'kn'
+            ? 'ಸಬ್-ಅಕ್ಯೂಟ್ ಕೆಚ್ಚಲು ಬಾವು (ಹಿಂಭಾಗದ ಎಡ ಮೊಲೆ ಬಾವು)'
+            : 'Subacute Mastitis (Left Hind Quarter Inflammation)',
+        diagnosed_by:
+          language === 'kn'
+            ? 'ಡಾ. ರಮೇಶ್ ಕುಮಾರ್ (ಪಶುವೈದ್ಯಾಧಿಕಾರಿ, ಮಂಡ್ಯ)'
+            : 'Dr. Ramesh Kumar (Vet Officer, Mandya)',
+      },
+      prescription: {
+        medicines: [
+          {
+            name: language === 'kn' ? 'ಇಂಟ್ರಾಮ್ಯಾಮರಿ ಕ್ಲಾಕ್ಸಾಸಿಲಿನ್ ಇನ್ಫ್ಯೂಷನ್' : 'Intramammary Cloxacillin Infusion',
+            dosage: language === 'kn' ? '1 ಟ್ಯೂಬ್ ಎಡ ಹಿಂಭಾಗದ ಮೊಲೆತೊಟ್ಟಿಗೆ' : '1 tube LH quarter',
+            frequency: language === 'kn' ? 'ಸಂಜೆ ಹಾಲು ಕರೆದ ನಂತರ' : 'Evening after full milk-out',
+            duration_days: 3,
+            instructions:
+              language === 'kn'
+                ? 'ಮೊಲೆತೊಟ್ಟನ್ನು ಸ್ವಚ್ಛಗೊಳಿಸಿ ಇಡೀ ಟ್ಯೂಬ್ ಒಳಸೇರಿಸಿ ಮೃದುವಾಗಿ ಮೇಲಕ್ಕೆ ಮಸಾಜ್ ಮಾಡಿ.'
+                : 'Clean teat end thoroughly before infusing; massage gently upwards.',
+          },
+          {
+            name: language === 'kn' ? 'ಸೆರಾಟಿಯೋಪೆಪ್ಟಿಡೇಸ್ + ಪ್ಯಾರಸಿಟಮಾಲ್ ಬೋಲಸ್' : 'Serratiopeptidase + Paracetamol Bolus',
+            dosage: language === 'kn' ? '2 ಮಾತ್ರೆಗಳು' : '2 boluses',
+            frequency: language === 'kn' ? 'ಬೆಳಿಗ್ಗೆ ಮತ್ತು ಸಂಜೆ' : 'Morning & Evening (BID)',
+            duration_days: 4,
+            instructions:
+              language === 'kn'
+                ? 'ಕೆಚ್ಚಲಿನ ಊತ ಮತ್ತು ಕಲ್ಲುಗಟ್ಟುವಿಕೆ ಕರಗಿಸಲು ಕೊಡಿ.'
+                : 'Anti-inflammatory enzyme to resolve udder hardness.',
+          },
+          {
+            name: language === 'kn' ? '0.5% ಪೋವಿಡೋನ್-ಅಯೋಡಿನ್ ಟೀಟ್ ಡಿಪ್' : '0.5% Povidone-Iodine Teat Dip',
+            dosage: language === 'kn' ? 'ಡಿಪ್ ಕಪ್ ತುಂಬಿಸಿ' : 'Full Dip Cup',
+            frequency: language === 'kn' ? 'ಪ್ರತಿ ಹಾಲು ಕರೆದ ತಕ್ಷಣ' : 'Post-milking every milking',
+            duration_days: 7,
+            instructions:
+              language === 'kn'
+                ? 'ಬ್ಯಾಕ್ಟೀರಿಯಾ ಸೋಂಕು ಹರಡದಂತೆ ತಡೆಗಟ್ಟಲು ಮೊಲೆತೊಟ್ಟುಗಳನ್ನು ಅದ್ದಿ.'
+                : 'Antiseptic barrier preventing ascending bacteria into teat canal.',
+          },
+        ],
+        followup_date: '2026-11-07',
+        prescribed_by: language === 'kn' ? 'ಡಾ. ರಮೇಶ್ ಕುಮಾರ್' : 'Dr. Ramesh Kumar',
+      },
+    },
+    {
+      id: 'case-demo-3',
+      case_number: 'PP-2026-00215',
+      animal_name: language === 'kn' ? 'ನಂದಿ (ಅಮೃತ ಮಹಲ್ ಹೋರಿ)' : 'Nandi (Amrit Mahal Bull)',
+      status: language === 'kn' ? 'ಚಿಕಿತ್ಸೆಯಲ್ಲಿದೆ' : 'TREATMENT_PRESCRIBED',
+      vet_assessment: {
+        diagnosis:
+          language === 'kn'
+            ? 'ಉಣ್ಣೆ ನಿಯಂತ್ರಣ ಮತ್ತು ರೋಗನಿರೋಧಕ ಜಂತುಹುಳು ನಿವಾರಣೆ'
+            : 'Ectoparasitic Tick Control & Prophylactic Deworming',
+        diagnosed_by:
+          language === 'kn'
+            ? 'ಡಾ. ಎಚ್.ಎಸ್. ಶ್ರೀನಿವಾಸ್ (ಮೈಸೂರು)'
+            : 'Dr. H.S. Srinivas (Mysuru Veterinary Hospital)',
+      },
+      prescription: {
+        medicines: [
+          {
+            name: language === 'kn' ? 'ಡೆಲ್ಟಾಮೆಥ್ರಿನ್ 1.25% ಸಿಂಪಡಣೆ ದ್ರಾವಣ' : 'Deltamethrin 1.25% Topical Spray',
+            dosage: language === 'kn' ? '2 ಮಿ.ಲೀ / 1 ಲೀಟರ್ ನೀರು' : '2 ml per 1 litre water',
+            frequency: language === 'kn' ? 'ವಾರಕ್ಕೆ ಒಮ್ಮೆ' : 'Once Weekly',
+            duration_days: 14,
+            instructions:
+              language === 'kn'
+                ? 'ಬೆನ್ನು, ಕತ್ತು ಮತ್ತು ಕಾಲುಗಳ ನಡುವಿನ ಉಣ್ಣೆಗಳ ಮೇಲೆ ಸಿಂಪಡಿಸಿ.'
+                : 'Spray thoroughly on tick-infested skin folds and underbelly.',
+          },
+          {
+            name: language === 'kn' ? 'ಅಲ್ಬೆಂಡಜೋಲ್ ಓರಲ್ ಸಸ್ಪೆನ್ಷನ್' : 'Albendazole Oral Suspension',
+            dosage: '60 ml',
+            frequency: language === 'kn' ? 'ಒಂದೇ ಡೋಸ್ (ಬೆಳಿಗ್ಗೆ ಖಾಲಿ ಹೊಟ್ಟೆಯಲ್ಲಿ)' : 'Single Dose (Empty Stomach)',
+            duration_days: 1,
+            instructions:
+              language === 'kn'
+                ? 'ಜಂತುಹುಳು ನಿವಾರಣೆಗೆ ಬೆಳಿಗ್ಗೆ ಮೇವು ನೀಡುವ ಮುನ್ನ ಕುಡಿಸಿ.'
+                : 'Broad spectrum deworming given before morning feed.',
+          },
+          {
+            name: language === 'kn' ? 'ಚೆಲೇಟೆಡ್ ಮಿನರಲ್ ಮಿಕ್ಶ್ಚರ್' : 'Chelated Mineral Mixture',
+            dosage: '50 g',
+            frequency: language === 'kn' ? 'ಪ್ರತಿದಿನ' : 'Daily in feed',
+            duration_days: 30,
+            instructions:
+              language === 'kn'
+                ? 'ರೋಗನಿರೋಧಕ ಶಕ್ತಿ ಮತ್ತು ರಕ್ತ ಕಣಗಳ ಹೆಚ್ಚಳಕ್ಕೆ ಬೂಸಾ ಅಥವಾ ಹಿಂಡಿಯಲ್ಲಿ ಬೆರೆಸಿ.'
+                : 'Mix in concentrated feed daily for vitality and coat health.',
+          },
+        ],
+        followup_date: '2026-11-15',
+        prescribed_by: language === 'kn' ? 'ಡಾ. ಎಚ್.ಎಸ್. ಶ್ರೀನಿವಾಸ್' : 'Dr. H.S. Srinivas',
+      },
+    },
+  ];
+
   const loadPrescriptions = async () => {
     setLoading(true);
     try {
       const data = await apiRequest('/cases');
       const treated = (data || []).filter((c) => c.prescription || c.status === 'TREATMENT_PRESCRIBED');
-      setCases(treated);
       if (treated.length > 0) {
-        setActiveCase(treated[0]);
-      } else if (data && data.length > 0) {
-        setActiveCase(data[0]);
+        setCases(treated);
+        setActiveCase((prev) => prev ? treated.find(t => t.id === prev.id) || treated[0] : treated[0]);
+      } else {
+        const demos = getDemoCases();
+        setCases(demos);
+        setActiveCase(demos[0]);
       }
     } catch (e) {
-      const mock = {
-        id: 'case-demo-1',
-        case_number: 'PP-2026-00124',
-        animal_name: language === 'kn' ? 'ಗಂಗಾ (ಹಳ್ಳಿಕಾರ್ ಹಸು)' : 'Ganga (Hallikar Cow)',
-        status: language === 'kn' ? 'ಚಿಕಿತ್ಸೆಯಲ್ಲಿದೆ' : 'TREATMENT_PRESCRIBED',
-        vet_assessment: {
-          diagnosis:
-            language === 'kn'
-              ? 'ತೀವ್ರ ಅಲ್ಪಕಾಲಿಕ ಬೋವೈನ್ ಜ್ವರ'
-              : 'Acute Bovine Ephemeral Fever with secondary glossitis',
-          diagnosed_by:
-            language === 'kn'
-              ? 'ಡಾ. ರಮೇಶ್ ಕುಮಾರ್ (ಮಂಡ್ಯ ಪಾಲಿಕ್ಲಿನಿಕ್)'
-              : 'Dr. Ramesh Kumar (Mandya Polyclinic)',
-        },
-        prescription: {
-          medicines: [
-            {
-              name: language === 'kn' ? 'ಮೆಲೋಕ್ಸಿಕಾಮ್ ಬೋಲಸ್ (100mg)' : 'Meloxicam Bolus (100mg)',
-              dosage: language === 'kn' ? '1 ಮಾತ್ರೆ (ಬೋಲಸ್)' : '1 bolus',
-              frequency: language === 'kn' ? 'ಬೆಳಿಗ್ಗೆ ಮತ್ತು ಸಂಜೆ' : 'Morning & Evening (BID)',
-              duration_days: 3,
-              instructions:
-                language === 'kn'
-                  ? 'ಹಸಿರು ಮೇವು ನೀಡಿದ ನಂತರ ಬಾಯಿಯ ಮೂಲಕ ಕೊಡಿ.'
-                  : 'Administer orally after green fodder feed.',
-            },
-            {
-              name: language === 'kn' ? 'ಬಿ-ಕಾಂಪ್ಲೆಕ್ಸ್ ಲಿವರ್ ಟಾನಿಕ್' : 'B-Complex Liver Tonic (Oral Syrup)',
-              dosage: '50 ml',
-              frequency: language === 'kn' ? 'ದಿನಕ್ಕೆ ಒಮ್ಮೆ (ಬೆಳಿಗ್ಗೆ)' : 'Once Daily (Morning)',
-              duration_days: 5,
-              instructions:
-                language === 'kn'
-                  ? 'ಮೇವು ತಿನ್ನುವುದನ್ನು ಹೆಚ್ಚಿಸಲು ಮತ್ತು ಜೀರ್ಣಕ್ರಿಯೆಗೆ ನೀಡಿ.'
-                  : 'Stimulates appetite and rumination.',
-            },
-          ],
-          followup_date: '2026-11-06',
-          prescribed_by: language === 'kn' ? 'ಡಾ. ರಮೇಶ್ ಕುಮಾರ್' : 'Dr. Ramesh Kumar',
-        },
-      };
-      setCases([mock]);
-      setActiveCase(mock);
+      const demos = getDemoCases();
+      setCases(demos);
+      setActiveCase(demos[0]);
     } finally {
       setLoading(false);
     }
@@ -164,6 +284,40 @@ export default function MedicineAdherenceScreen() {
         <h2 className="text-xl font-black leading-tight">{t('adherence_title')}</h2>
         <p className="text-xs text-emerald-200 mt-1">{t('adherence_sub')}</p>
       </div>
+
+      {/* Case / Animal Switcher Tabs */}
+      {cases.length > 1 && (
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block px-1">
+            {language === 'kn' ? 'ಜಾನುವಾರು ಚಿಕಿತ್ಸಾ ಪ್ರಕರಣಗಳು (Select Animal Case):' : 'Active Patient Prescriptions:'}
+          </span>
+          <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
+            {cases.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => {
+                  setActiveCase(c);
+                  setScanResult(null);
+                  setDoseSuccess(false);
+                }}
+                className={`px-3.5 py-2.5 rounded-2xl font-bold text-xs shrink-0 transition-all flex items-center space-x-2 border shadow-sm ${
+                  activeCase?.id === c.id
+                    ? 'bg-emerald-700 text-white border-emerald-800 ring-2 ring-emerald-500/30'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-emerald-50'
+                }`}
+              >
+                <Pill size={14} className={activeCase?.id === c.id ? 'text-emerald-200' : 'text-emerald-600'} />
+                <span>{c.animal_name || c.case_number}</span>
+                <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
+                  activeCase?.id === c.id ? 'bg-emerald-800 text-emerald-100' : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {c.case_number}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {activeCase ? (
         <div className="space-y-5">

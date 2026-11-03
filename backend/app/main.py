@@ -24,6 +24,7 @@ from app.routes import (
     family,
     learning,
     copilot,
+    passport,
 )
 
 app = FastAPI(
@@ -81,6 +82,7 @@ app.include_router(village_clusters.router)
 app.include_router(family.router)
 app.include_router(learning.router)
 app.include_router(copilot.router)
+app.include_router(passport.router)
 
 # Mount all routers under /api as well to support Vercel /api rewrites and Vite proxy
 from fastapi import APIRouter
@@ -98,6 +100,7 @@ api_router.include_router(village_clusters.router)
 api_router.include_router(family.router)
 api_router.include_router(learning.router)
 api_router.include_router(copilot.router)
+api_router.include_router(passport.router)
 app.include_router(api_router)
 
 

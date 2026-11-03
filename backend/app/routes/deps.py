@@ -45,3 +45,23 @@ def get_current_user(
         )
 
     return user
+
+
+def get_current_user_optional(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db),
+) -> User | None:
+    """Optional JWT authentication dependency; returns None if unsigned."""
+    if not credentials:
+        return None
+
+    token = credentials.credentials
+    payload = decode_access_token(token)
+    if not payload:
+        return None
+
+    user_id = payload.get("sub")
+    if not user_id:
+        return None
+
+    return db.query(User).filter(User.id == user_id).first()

@@ -95,19 +95,27 @@ export async function saveLocalAnimal(animalData, isFromSync = false) {
 }
 
 export async function archiveLocalAnimal(id, isFromSync = false) {
-  const animal = await getByIdFromStore('animals', id);
-  if (!animal) return;
+  return deleteLocalAnimal(id, false, isFromSync);
+}
 
-  animal.status = 'archived';
-  animal.updated_at = new Date().toISOString();
-  await putToStore('animals', animal);
+export async function deleteLocalAnimal(id, hard = false, isFromSync = false) {
+  if (hard) {
+    await deleteFromStore('animals', id);
+  } else {
+    const animal = await getByIdFromStore('animals', id);
+    if (animal) {
+      animal.status = 'archived';
+      animal.updated_at = new Date().toISOString();
+      await putToStore('animals', animal);
+    }
+  }
 
   if (!isFromSync) {
     await enqueueMutation({
       entity: 'animal',
-      action: 'delete',
+      action: hard ? 'hard_delete' : 'delete',
       entityId: id,
-      data: animal,
+      data: { id, hard },
     });
   }
 }

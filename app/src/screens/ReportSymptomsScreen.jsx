@@ -119,6 +119,66 @@ export default function ReportSymptomsScreen({ onCaseCreated, onNavigateToVets }
     setSymptoms(detected);
   };
 
+  const demoReportTemplates = [
+    {
+      icon: '🌡️',
+      label: language === 'kn' ? 'ಜ್ವರ & ಕುಂಟುವಿಕೆ (Ganga FMD/Fever)' : 'High Fever & Stiffness (Ganga)',
+      symptoms: [t('sym_fever'), t('sym_saliva'), t('sym_limp')],
+      temp: 104.2,
+      duration: 2,
+      appetite: 'reduced',
+      desc:
+        language === 'kn'
+          ? 'ಹಸುವಿಗೆ 104.2°F ತೀವ್ರ ಜ್ವರವಿದೆ, ಬಾಯಲ್ಲಿ ಜೊಲ್ಲು ಸುರಿಯುತ್ತಿದೆ ಮತ್ತು ಮುಂಗಾಲುಗಳಲ್ಲಿ ಕುಂಟುವಿಕೆ ಇದೆ. ಮೇವು ತಿನ್ನುತ್ತಿಲ್ಲ.'
+          : 'High fever of 104.2 F with excessive oral salivation, stiff gait in forelimbs, and reduced ruminate feed intake.',
+    },
+    {
+      icon: '🥛',
+      label: language === 'kn' ? 'ಕೆಚ್ಚಲು ಬಾವು (Yamuna Mastitis)' : 'Udder Swelling (Yamuna)',
+      symptoms: [t('sym_mastitis'), t('sym_appetite')],
+      temp: 101.9,
+      duration: 1,
+      appetite: 'reduced',
+      desc:
+        language === 'kn'
+          ? 'ಎಡ ಹಿಂಭಾಗದ ಮೊಲೆಬಾವು ಗಟ್ಟಿಯಾಗಿದೆ ಮತ್ತು ಮುಟ್ಟಿದರೆ ಬಿಸಿಯಾಗಿದೆ. ಹಾಲಿನಲ್ಲಿ ರಕ್ತಮಿಶ್ರಿತ ಚೂರುಗಳು ಕಂಡುಬಂದಿವೆ.'
+          : 'Left hind teat quarter is hard, hot, and painful to touch. Flakes observed in initial stripped milk streams.',
+    },
+    {
+      icon: '⚠️',
+      label: language === 'kn' ? 'ಹೊಟ್ಟೆ ಉಬ್ಬರ (Acute Bloat)' : 'Severe Bloat (Emergency)',
+      symptoms: [t('sym_bloat'), t('sym_respiratory')],
+      temp: 102.1,
+      duration: 1,
+      appetite: 'none',
+      desc:
+        language === 'kn'
+          ? 'ಹಸಿರು ಮೇವು ತಿಂದ ನಂತರ ಎಡ ಹೊಟ್ಟೆ ಸಂಪೂರ್ಣ ಉಬ್ಬಿದೆ. ಉಸಿರಾಟಕ್ಕೆ ತೊಂದರೆ ಮತ್ತು ಒದ್ದಾಡುತ್ತಿದೆ.'
+          : 'Severe left flank distension following fresh clover feed. Animal in respiratory distress, groaning and kicking at abdomen.',
+    },
+    {
+      icon: '🪲',
+      label: language === 'kn' ? 'ಉಣ್ಣೆ & ಚರ್ಮ ಗಂಟುಗಳು (Tick/LSD)' : 'Tick Fever & Skin Nodules',
+      symptoms: [t('sym_lumps'), t('sym_fever')],
+      temp: 103.5,
+      duration: 3,
+      appetite: 'reduced',
+      desc:
+        language === 'kn'
+          ? 'ಕತ್ತು ಮತ್ತು ಬೆನ್ನಿನ ಮೇಲೆ ದುಂಡಗಿನ ಚರ್ಮದ ಗಂಟುಗಳು ಎದ್ದಿವೆ. ಕಚ್ಚುವ ಉಣ್ಣೆಗಳು ಹೆಚ್ಚಾಗಿವೆ ಮತ್ತು ತೂಕ ಇಳಿಕೆಯಾಗಿದೆ.'
+          : 'Multiple raised circumscribed nodules observed on neck and flank with heavy tick load and moderate pyrexia.',
+    },
+  ];
+
+  const applyDemoReport = (tpl) => {
+    setSymptoms(tpl.symptoms);
+    setTemperatureF(tpl.temp);
+    setDurationDays(tpl.duration);
+    setAppetite(tpl.appetite);
+    setDescription(tpl.desc);
+    setVoiceTranscript(tpl.desc);
+  };
+
   const handleStartVoice = () => {
     if (recognitionRef.current) {
       try {
@@ -272,6 +332,38 @@ export default function ReportSymptomsScreen({ onCaseCreated, onNavigateToVets }
           </div>
         </div>
       </div>
+
+      {/* Quick Clinical Demo Reports Toolbar */}
+      {!createdCase && (
+        <div className="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-1.5 text-xs font-black text-slate-800">
+              <Sparkles size={14} className="text-emerald-600" />
+              <span>{language === 'kn' ? 'ತ್ವರಿತ ಮಾದರಿ ವರದಿಗಳು (1-ಕ್ಲಿಕ್ ಭರ್ತಿ):' : 'Quick Demo Case Reports (1-Click Fill):'}</span>
+            </div>
+            <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              {language === 'kn' ? 'ಮಾದರಿ ಡೇಟಾ' : 'DEMO DATA'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {demoReportTemplates.map((tpl, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => applyDemoReport(tpl)}
+                className="px-3 py-2 rounded-2xl text-xs font-semibold bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 text-slate-800 border border-slate-200 transition-all flex items-center space-x-2 text-left active:scale-95"
+              >
+                <span className="text-lg">{tpl.icon}</span>
+                <div className="overflow-hidden">
+                  <div className="font-bold text-slate-900 truncate">{tpl.label}</div>
+                  <div className="text-[10px] text-slate-500 font-mono">{tpl.temp}°F • {tpl.duration} {language === 'kn' ? 'ದಿನಗಳು' : 'days'}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {!createdCase ? (
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-6 text-xs">

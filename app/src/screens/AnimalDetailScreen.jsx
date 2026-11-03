@@ -5,8 +5,10 @@ import {
   getLocalEventsByAnimal,
   saveLocalHealthEvent,
   archiveLocalAnimal,
+  deleteLocalAnimal,
 } from '../storage/repositories';
 import { runSync } from '../sync/syncManager';
+import { apiRequest } from '../api/client';
 import HealthPassportModal from '../components/HealthPassportModal';
 import {
   ArrowLeft,
@@ -21,6 +23,8 @@ import {
   X,
   IndianRupee,
   QrCode,
+  Trash2,
+  AlertTriangle,
 } from 'lucide-react';
 
 export default function AnimalDetailScreen({ animalId, onBack }) {
@@ -29,6 +33,11 @@ export default function AnimalDetailScreen({ animalId, onBack }) {
   const [events, setEvents] = useState([]);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [showPassportModal, setShowPassportModal] = useState(false);
+
+  // Delete State
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteMode, setDeleteMode] = useState('archive'); // 'archive' | 'permanent'
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Form State
   const [eventType, setEventType] = useState('vaccination');
@@ -86,8 +95,34 @@ export default function AnimalDetailScreen({ animalId, onBack }) {
     }
   };
 
+  const handleExecuteDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const isPermanent = deleteMode === 'permanent';
+
+      if (navigator.onLine) {
+        try {
+          await apiRequest(`/animals/${animalId}?hard=${isPermanent}`, {
+            method: 'DELETE',
+          });
+        } catch (apiErr) {
+          console.warn('Backend delete error (falling back to offline queue):', apiErr);
+        }
+      }
+
+      await deleteLocalAnimal(animalId, isPermanent);
+      runSync();
+      setShowDeleteModal(false);
+      onBack();
+    } catch (err) {
+      alert('Failed to delete animal: ' + err.message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleArchive = async () => {
-    if (window.confirm(t('archive_confirm'))) {
+    if (window.confirm(t('archive_confirm') || t('delete_confirm'))) {
       await archiveLocalAnimal(animalId);
       runSync();
       onBack();
@@ -132,21 +167,19 @@ export default function AnimalDetailScreen({ animalId, onBack }) {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setShowPassportModal(true)}
-            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-sm transition-all"
+            className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-sm transition-all active:scale-95"
           >
             <QrCode size={15} />
             <span>{language === 'kn' ? 'ಕ್ಯೂಆರ್ ಪಾಸ್‌ಪೋರ್ಟ್' : 'QR Passport'}</span>
           </button>
 
-          {animal.status !== 'archived' && (
-            <button
-              onClick={handleArchive}
-              className="p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 touch-target flex items-center space-x-1.5 font-semibold text-xs border border-red-200"
-            >
-              <Archive size={16} />
-              <span>{t('archive_animal')}</span>
-            </button>
-          )}
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="px-3 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 touch-target flex items-center space-x-1.5 font-bold text-xs border border-red-200 shadow-sm transition-all active:scale-95"
+          >
+            <Trash2 size={15} />
+            <span>{t('delete_animal')}</span>
+          </button>
         </div>
       </div>
 
@@ -345,6 +378,122 @@ export default function AnimalDetailScreen({ animalId, onBack }) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Animal Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
+          <div className="bg-white w-full max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div className="bg-red-600 text-white p-4 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Trash2 size={20} />
+                <h3 className="font-bold text-lg">{t('delete_animal')}</h3>
+              </div>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="p-1 rounded-full hover:bg-white/20 touch-target"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 text-2xl flex items-center justify-center flex-shrink-0">
+                  {animal.species === 'buffalo' ? '🐃' : animal.species === 'goat' ? '🐐' : animal.species === 'sheep' ? '🐑' : '🐄'}
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-base">
+                    {animal.name || `Animal #${animal.tag_id}`}
+                  </div>
+                  <div className="text-xs text-slate-500 font-medium">
+                    Tag: <span className="font-bold text-slate-700">{animal.tag_id}</span> • {animal.species}
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-700 font-medium">
+                {t('delete_confirm')}
+              </p>
+
+              {/* Mode Selection */}
+              <div className="space-y-2">
+                <label
+                  onClick={() => setDeleteMode('archive')}
+                  className={`flex items-start p-3 border rounded-xl cursor-pointer transition-all ${
+                    deleteMode === 'archive'
+                      ? 'border-brand-500 bg-brand-50/50 ring-1 ring-brand-500'
+                      : 'border-slate-200 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="detailDeleteMode"
+                    value="archive"
+                    checked={deleteMode === 'archive'}
+                    onChange={() => setDeleteMode('archive')}
+                    className="mt-1 text-brand-600 focus:ring-brand-500"
+                  />
+                  <div className="ml-3">
+                    <span className="block text-sm font-bold text-slate-900">
+                      {language === 'kn' ? 'ಆರ್ಕೈವ್ ಮಾಡಿ (ಹಳೆಯ ದಾಖಲೆ - ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ)' : 'Archive (Recommended - Keep history)'}
+                    </span>
+                    <span className="block text-xs text-slate-500 mt-0.5">
+                      {t('delete_subtext')}
+                    </span>
+                  </div>
+                </label>
+
+                <label
+                  onClick={() => setDeleteMode('permanent')}
+                  className={`flex items-start p-3 border rounded-xl cursor-pointer transition-all ${
+                    deleteMode === 'permanent'
+                      ? 'border-red-500 bg-red-50/50 ring-1 ring-red-500'
+                      : 'border-slate-200 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="detailDeleteMode"
+                    value="permanent"
+                    checked={deleteMode === 'permanent'}
+                    onChange={() => setDeleteMode('permanent')}
+                    className="mt-1 text-red-600 focus:ring-red-500"
+                  />
+                  <div className="ml-3">
+                    <span className="block text-sm font-bold text-red-700">
+                      {t('delete_permanent')}
+                    </span>
+                    <span className="block text-xs text-red-600 mt-0.5">
+                      {t('delete_permanent_warning')}
+                    </span>
+                  </div>
+                </label>
+              </div>
+
+              <div className="pt-2 flex space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(false)}
+                  disabled={isDeleting}
+                  className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl touch-target"
+                >
+                  {t('cancel')}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleExecuteDelete}
+                  disabled={isDeleting}
+                  className="flex-1 py-3 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold rounded-xl touch-target shadow flex items-center justify-center space-x-1.5"
+                >
+                  <Trash2 size={16} />
+                  <span>{isDeleting ? t('loading') : t('confirm')}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
