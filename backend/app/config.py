@@ -28,9 +28,25 @@ class Settings(BaseSettings):
 
     # Supabase Configuration
     SUPABASE_URL: str = ""
+    NEXT_PUBLIC_SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
     SUPABASE_ANON_KEY: str = ""
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: str = ""
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: str = ""
     SUPABASE_SERVICE_ROLE_KEY: str = ""
+
+    @property
+    def effective_supabase_url(self) -> str:
+        return self.SUPABASE_URL or self.NEXT_PUBLIC_SUPABASE_URL or ""
+
+    @property
+    def effective_supabase_anon_key(self) -> str:
+        return (
+            self.SUPABASE_ANON_KEY
+            or self.NEXT_PUBLIC_SUPABASE_ANON_KEY
+            or self.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+            or ""
+        )
 
     model_config = SettingsConfigDict(
         env_file=".env",

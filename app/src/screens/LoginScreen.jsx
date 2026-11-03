@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { useTranslation } from '../i18n';
 import { apiRequest, setAuthToken } from '../api/client';
 import { runSync } from '../sync/syncManager';
-import { Phone, KeyRound, CheckCircle2, AlertCircle, Sparkles, Stethoscope, Building2, User } from 'lucide-react';
+import {
+  supabaseSignInWithOtp,
+  supabaseVerifyOtp,
+  isSupabaseConfigured,
+} from '../services/supabaseClient';
+import { Phone, KeyRound, CheckCircle2, AlertCircle, Sparkles, Stethoscope, Building2, User, Database } from 'lucide-react';
 
 export default function LoginScreen({ onLoginSuccess }) {
   const { t, language } = useTranslation();
@@ -20,6 +25,12 @@ export default function LoginScreen({ onLoginSuccess }) {
     setLoading(true);
 
     try {
+      if (isSupabaseConfigured) {
+        supabaseSignInWithOtp(phone).catch((err) =>
+          console.warn('Supabase Auth sign-in non-blocking note:', err)
+        );
+      }
+
       const data = await apiRequest('/auth/request-otp', {
         method: 'POST',
         body: JSON.stringify({ phone }),
@@ -40,6 +51,12 @@ export default function LoginScreen({ onLoginSuccess }) {
     setLoading(true);
 
     try {
+      if (isSupabaseConfigured) {
+        supabaseVerifyOtp(phone, otp).catch((err) =>
+          console.warn('Supabase Auth verify non-blocking note:', err)
+        );
+      }
+
       const data = await apiRequest('/auth/verify-otp', {
         method: 'POST',
         body: JSON.stringify({ phone, otp, role: selectedRole }),
@@ -72,6 +89,7 @@ export default function LoginScreen({ onLoginSuccess }) {
         method: 'POST',
         body: JSON.stringify({ phone: demoPhone }),
       });
+
       // 2. Verify OTP with selected persona role
       const data = await apiRequest('/auth/verify-otp', {
         method: 'POST',
@@ -82,16 +100,22 @@ export default function LoginScreen({ onLoginSuccess }) {
         }),
       });
 
-      // 3. Set name & role
-      await apiRequest('/auth/switch-role', {
-        method: 'POST',
-        body: JSON.stringify({ role: roleName, name: displayName }),
-      });
-
+      // Immediately save token before making authenticated calls
       setAuthToken(data.access_token);
       localStorage.setItem('pashupulse_phone', data.phone);
       localStorage.setItem('pashupulse_user_id', data.user_id);
       localStorage.setItem('pashupulse_role', roleName);
+
+      // 3. Set name & role with explicit authorization header
+      try {
+        await apiRequest('/auth/switch-role', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${data.access_token}` },
+          body: JSON.stringify({ role: roleName, name: displayName }),
+        });
+      } catch (roleErr) {
+        console.warn('Role switch non-critical notice:', roleErr);
+      }
 
       runSync();
 

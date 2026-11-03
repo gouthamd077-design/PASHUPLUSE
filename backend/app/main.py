@@ -23,9 +23,6 @@ from app.routes import (
     copilot,
 )
 
-# Safely initialize database tables without crashing on cold starts
-init_db()
-
 app = FastAPI(
     title=settings.APP_NAME,
     description="Offline-First, Multilingual AI Livestock Health & Early Warning API (PRD F1-F8)",
@@ -33,6 +30,12 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+@app.on_event("startup")
+def on_startup():
+    """Initialize database tables in background without blocking serverless cold starts."""
+    import threading
+    threading.Thread(target=init_db, daemon=True).start()
 
 # Global unhandled exception handler to return clean JSON rather than 500 crashes
 from fastapi import Request

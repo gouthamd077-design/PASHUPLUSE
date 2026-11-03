@@ -12,29 +12,28 @@ Base = declarative_base()
 
 
 def build_engine():
-    """Builds a database engine with graceful fallback between PostgreSQL and SQLite."""
+    """Builds a database engine with non-blocking initialization, 3s timeout for cloud Postgres, and safe serverless fallback."""
     raw_url = (
         settings.DATABASE_URL
         or settings.POSTGRES_PRISMA_URL
         or settings.POSTGRES_URL
     )
 
-    # In serverless environments (like Vercel), the current working directory is read-only.
-    # We must use /tmp for SQLite files so file writes do not raise Errno 30.
     if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
         sqlite_fallback = f"sqlite:///{os.path.join(tempfile.gettempdir(), 'pashupulse.db')}"
     else:
         sqlite_fallback = "sqlite:///./pashupulse.db"
 
-    # Attempt PostgreSQL / Supabase first if a postgres URL is provided
+    # If Postgres/Supabase URL is present, attempt connection with a strict 3s timeout
     if raw_url and ("postgres" in raw_url):
         db_url = raw_url
         if db_url.startswith("postgres://"):
             db_url = db_url.replace("postgres://", "postgresql://", 1)
 
-        connect_args = {}
-        # Ensure sslmode=require for cloud PostgreSQL unless already specified
-        if "sslmode" not in db_url and not db_url.startswith("sqlite"):
+        connect_args = {
+            "connect_timeout": 3,
+        }
+        if "sslmode" not in db_url:
             connect_args["sslmode"] = "require"
 
         try:
@@ -44,7 +43,6 @@ def build_engine():
                 pool_pre_ping=True,
                 echo=False,
             )
-            # Verify the connection works
             with pg_engine.connect() as conn:
                 pass
             logger.info("Successfully connected to Supabase / PostgreSQL database.")
@@ -54,7 +52,7 @@ def build_engine():
                 f"PostgreSQL connection failed ({err}). Falling back to local writable SQLite ({sqlite_fallback})."
             )
 
-    # Fallback to SQLite (using /tmp on Vercel to prevent read-only filesystem crash)
+    # Local or serverless SQLite fallback
     return create_engine(
         sqlite_fallback,
         connect_args={"check_same_thread": False},
@@ -67,12 +65,12 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def init_db():
-    """Create all tables in the database if they do not exist, catching errors safely."""
+    """Create all tables in the database if they do not exist without blocking server startup."""
     try:
         import app.models  # noqa: F401
         Base.metadata.create_all(bind=engine)
     except Exception as e:
-        logger.warning(f"Notice during init_db: {e}")
+        logger.warning(f"Database table check notice: {e}")
 
 
 def get_db():
