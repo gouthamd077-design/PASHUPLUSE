@@ -9,6 +9,7 @@ from app.config import settings
 logger = logging.getLogger("pashupulse.db")
 
 Base = declarative_base()
+_db_initialized = False
 
 
 def build_engine():
@@ -47,7 +48,7 @@ def build_engine():
                 pass
             logger.info("Successfully connected to Supabase / PostgreSQL database.")
             return pg_engine
-        except Exception as err:
+        except (Exception, BaseException) as err:
             logger.warning(
                 f"PostgreSQL connection failed ({err}). Falling back to local writable SQLite ({sqlite_fallback})."
             )
@@ -65,16 +66,24 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def init_db():
-    """Create all tables in the database if they do not exist without blocking server startup."""
+    """Lazily create all tables in the database if they do not exist."""
+    global _db_initialized
+    if _db_initialized:
+        return
     try:
         import app.models  # noqa: F401
         Base.metadata.create_all(bind=engine)
-    except Exception as e:
+        _db_initialized = True
+    except (Exception, BaseException) as e:
         logger.warning(f"Database table check notice: {e}")
 
 
 def get_db():
     """FastAPI dependency that yields a database session and handles rollbacks cleanly."""
+    global _db_initialized
+    if not _db_initialized:
+        init_db()
+
     db = SessionLocal()
     try:
         yield db

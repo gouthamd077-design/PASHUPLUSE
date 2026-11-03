@@ -34,38 +34,33 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-@app.on_event("startup")
-def on_startup():
-    """Initialize database tables safely without crashing."""
-    try:
-        init_db()
-    except Exception as e:
-        logger.warning(f"Database startup notice: {e}")
-
-# Global unhandled exception handler to return clean JSON rather than 500 crashes
 from fastapi import Request
 from fastapi.responses import JSONResponse
+import traceback
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    import logging
-    import traceback
-    logging.getLogger("uvicorn.error").error(f"Global unhandled error on {request.url}: {traceback.format_exc()}")
-    return JSONResponse(
-        status_code=500,
-        content={
-            "status": "error",
-            "message": str(exc) or "Internal Server Error",
-            "error_type": exc.__class__.__name__,
-            "path": request.url.path,
-        },
-    )
+@app.middleware("http")
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as exc:
+        trace = traceback.format_exc()
+        logger.error(f"Global unhandled error on {request.url}: {trace}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": str(exc) or "Internal Server Error",
+                "error_type": exc.__class__.__name__,
+                "path": request.url.path,
+                "traceback": trace,
+            },
+        )
 
 # Configure Cross-Origin Resource Sharing (CORS) for the frontend PWA
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS if settings.CORS_ORIGINS else ["*"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
