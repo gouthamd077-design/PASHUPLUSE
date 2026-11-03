@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import OfflineBanner from './components/OfflineBanner';
 import BottomNav from './components/BottomNav';
 import PashuSOSModal from './components/PashuSOSModal';
+import HealthPassportModal from './components/HealthPassportModal';
 
 // Screens
 import LoginScreen from './screens/LoginScreen';
@@ -30,6 +31,13 @@ export default function App() {
   const [selectedAnimalId, setSelectedAnimalId] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isGlobalSosOpen, setIsGlobalSosOpen] = useState(false);
+  const [scannedPassportTag, setScannedPassportTag] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('passport') || null;
+    }
+    return null;
+  });
 
   useEffect(() => {
     const handleOnline = () => {
@@ -148,6 +156,30 @@ export default function App() {
           isOpen={isGlobalSosOpen}
           onClose={() => setIsGlobalSosOpen(false)}
         />
+
+        {/* Scanned QR Health Passport Modal (Direct access via camera scan) */}
+        {scannedPassportTag && (
+          <HealthPassportModal
+            isOpen={!!scannedPassportTag}
+            onClose={() => {
+              setScannedPassportTag(null);
+              if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+              }
+            }}
+            animal={{
+              tag_id: scannedPassportTag,
+              name: 'Ganga (Cow)',
+              species: 'cattle',
+              breed: 'Hallikar Breed',
+              age_months: 28,
+              gender: 'female',
+              district: 'Mandya, Karnataka',
+              owner_name: 'Farmer Daniel Gowda',
+              owner_phone: '+91 98450 12345',
+            }}
+          />
+        )}
       </div>
     </I18nProvider>
   );

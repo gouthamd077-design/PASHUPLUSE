@@ -325,6 +325,7 @@ export default function HomeScreen({ onNavigate }) {
       <HealthPassportModal
         isOpen={isPassportOpen}
         onClose={() => setIsPassportOpen(false)}
+        animals={animals}
         animal={
           selectedAnimal ||
           animals[0] || {
@@ -335,6 +336,10 @@ export default function HomeScreen({ onNavigate }) {
             breed: language === 'kn' ? 'ಹಳ್ಳಿಕಾರ್ ತಳಿ' : 'Hallikar Breed',
           }
         }
+        onAnimalUpdated={(updated) => {
+          setSelectedAnimal(updated);
+          loadData();
+        }}
       />
 
       <PashuFamilyModal

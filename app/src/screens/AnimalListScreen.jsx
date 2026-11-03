@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../i18n';
 import { getLocalAnimals, saveLocalAnimal } from '../storage/repositories';
 import { runSync } from '../sync/syncManager';
+import HealthPassportModal from '../components/HealthPassportModal';
 import {
   Plus,
   Search,
@@ -10,14 +11,16 @@ import {
   FolderHeart,
   Tag,
   X,
+  QrCode,
 } from 'lucide-react';
 
 export default function AnimalListScreen({ onSelectAnimal }) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [animals, setAnimals] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('active'); // 'active' | 'archived' | 'all'
   const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedPassportAnimal, setSelectedPassportAnimal] = useState(null);
 
   // Form State
   const [tagId, setTagId] = useState('');
@@ -186,10 +189,35 @@ export default function AnimalListScreen({ onSelectAnimal }) {
                   </div>
                 </div>
               </div>
-              <ChevronRight size={20} className="text-slate-400" />
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  title="View Verified QR Passport"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPassportAnimal(animal);
+                  }}
+                  className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center space-x-1 text-xs font-bold transition-all shadow-sm active:scale-95"
+                >
+                  <QrCode size={16} className="text-emerald-700" />
+                  <span className="hidden sm:inline">{language === 'kn' ? 'ಕ್ಯೂಆರ್ ಪಾಸ್‌ಪೋರ್ಟ್' : 'QR Passport'}</span>
+                </button>
+                <ChevronRight size={20} className="text-slate-400" />
+              </div>
             </div>
           ))}
         </div>
+      )}
+
+      {/* Verified Health Passport Modal */}
+      {selectedPassportAnimal && (
+        <HealthPassportModal
+          isOpen={!!selectedPassportAnimal}
+          onClose={() => setSelectedPassportAnimal(null)}
+          animal={selectedPassportAnimal}
+          animals={animals}
+          onAnimalUpdated={() => loadAnimals()}
+        />
       )}
 
       {/* Add Animal Modal */}

@@ -7,6 +7,7 @@ import {
   archiveLocalAnimal,
 } from '../storage/repositories';
 import { runSync } from '../sync/syncManager';
+import HealthPassportModal from '../components/HealthPassportModal';
 import {
   ArrowLeft,
   Plus,
@@ -19,13 +20,15 @@ import {
   Calendar,
   X,
   IndianRupee,
+  QrCode,
 } from 'lucide-react';
 
 export default function AnimalDetailScreen({ animalId, onBack }) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [animal, setAnimal] = useState(null);
   const [events, setEvents] = useState([]);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
+  const [showPassportModal, setShowPassportModal] = useState(false);
 
   // Form State
   const [eventType, setEventType] = useState('vaccination');
@@ -126,15 +129,25 @@ export default function AnimalDetailScreen({ animalId, onBack }) {
           <span>{t('back')}</span>
         </button>
 
-        {animal.status !== 'archived' && (
+        <div className="flex items-center space-x-2">
           <button
-            onClick={handleArchive}
-            className="p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 touch-target flex items-center space-x-1.5 font-semibold text-xs border border-red-200"
+            onClick={() => setShowPassportModal(true)}
+            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center space-x-1.5 shadow-sm transition-all"
           >
-            <Archive size={16} />
-            <span>{t('archive_animal')}</span>
+            <QrCode size={15} />
+            <span>{language === 'kn' ? 'ಕ್ಯೂಆರ್ ಪಾಸ್‌ಪೋರ್ಟ್' : 'QR Passport'}</span>
           </button>
-        )}
+
+          {animal.status !== 'archived' && (
+            <button
+              onClick={handleArchive}
+              className="p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 touch-target flex items-center space-x-1.5 font-semibold text-xs border border-red-200"
+            >
+              <Archive size={16} />
+              <span>{t('archive_animal')}</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Animal Header Card */}
@@ -334,6 +347,19 @@ export default function AnimalDetailScreen({ animalId, onBack }) {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Health Passport Modal */}
+      {showPassportModal && (
+        <HealthPassportModal
+          isOpen={showPassportModal}
+          onClose={() => setShowPassportModal(false)}
+          animal={animal}
+          onAnimalUpdated={(updated) => {
+            setAnimal(updated);
+            loadData();
+          }}
+        />
       )}
     </div>
   );
