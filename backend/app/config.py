@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List, Union
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -23,8 +23,8 @@ class Settings(BaseSettings):
     # Mock OTP for development
     DEV_MOCK_OTP: str = "1234"
 
-    # Allowed CORS Origins for React + Vite PWA frontend
-    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173", "*"]
+    # Allowed CORS Origins for React + Vite PWA frontend (Any type prevents json.loads crash on escaped strings)
+    CORS_ORIGINS: Any = ["http://localhost:5173", "http://127.0.0.1:5173", "*"]
 
     # Supabase Configuration
     SUPABASE_URL: str = ""

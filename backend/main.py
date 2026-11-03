@@ -20,7 +20,11 @@ _startup_status = {}
 try:
     from app.main import app as _actual_app
     app = _actual_app
-    _startup_status = {"status": "imported_successfully"}
+    _startup_status = {
+        "status": "online",
+        "message": "PASHU PULSE API initialized successfully",
+        "python_version": sys.version,
+    }
 except Exception as _err:
     _startup_status = {
         "status": "failed",
@@ -28,7 +32,6 @@ except Exception as _err:
         "traceback": traceback.format_exc(),
         "backend_dir": backend_dir,
         "sys_path": sys.path,
-        "files_in_backend_dir": os.listdir(backend_dir) if os.path.exists(backend_dir) else [],
     }
 
 @app.get("/api/debug-status")
